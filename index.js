@@ -2,7 +2,7 @@ const Attributes = require("./Attributes/Attributes");
 const Database = require("./DataBase/DataBase");
 const Entity = require("./Entity/Entity");
 
-class dataForge {
+class ForgeBase {
     constructor(DataBasePath) {
         const db = new Database(DataBasePath);
         this.entity = new Entity(db);
@@ -14,59 +14,68 @@ class dataForge {
             const entities = await this.entity.get(Type);
             const results = await Promise.all(
                 entities.map(async (entity) => {
-                    const attributes = await this.attributes.get(
+                    const attributesArray = await this.attributes.get(
                         entity.entity_id
                     );
-                    return { ...entity, attributes }; // 객체를 생성
+                    // attributes 배열을 객체로 변환
+                    const attributesObject = attributesArray.reduce(
+                        (acc, attr) => {
+                            acc[attr.key] = attr.value;
+                            return acc;
+                        },
+                        {}
+                    );
+
+                    return { ...entity, attributes: attributesObject }; // 속성 객체를 사용하여 결과 구성
                 })
             );
 
-            // 모든 엔티티와 속성을 포함하는 객체 배열을 JSON 문자열로 변환
-            const jsonString = JSON.stringify(results, null, 2);
-            return jsonString; // JSON 문자열 반환
+            return results; // JSON.parse(jsonString) 대신 직접 객체 배열 반환
+        } catch (err) {
+            throw {
+                Title: "Error",
+                Message: "Error getting entities by type",
+                Status: 500,
+            };
+        }
+    }
+
+    async getById(entityId) {
+        try {
+            const entity = await this.entity.read(entityId);
+            const attributes = await this.attributes.get(entityId);
+            return { ...entity, attributes };
         } catch (err) {
             console.error(err);
             return null;
         }
     }
 
-    create(userData, Type) {
-        return this.entity
-            .create(Type)
-            .then((entityId) => {
-                const attributePromises = Object.entries(userData).map(
-                    ([key, value]) => {
-                        return this.attributes.create(entityId, key, value);
-                    }
-                );
+    async create(userData, Type) {
+        try {
+            const entityId = await this.entity.create(Type);
+            const attributePromises = Object.entries(userData).map(
+                ([key, value]) => this.attributes.create(entityId, key, value)
+            );
 
-                return Promise.all(attributePromises)
-                    .then(() => {
-                        return {
-                            Title: "Success",
-                            Message: `${Type} created successfully`,
-                            Status: 200,
-                        };
-                    })
-                    .catch((err) => {
-                        throw {
-                            Title: "Error",
-                            Message: `Error creating ${Type} attributes`,
-                            Status: 500,
-                        };
-                    });
-            })
-            .catch((err) => {
-                throw {
-                    Title: "Error",
-                    Message: `Error creating ${Type} entity`,
-                    Status: 500,
-                };
-            });
+            await Promise.all(attributePromises);
+
+            return {
+                Title: "Success",
+                Message: `${Type} created successfully`,
+                Status: 200,
+            };
+        } catch (err) {
+            throw {
+                Title: "Error",
+                Message: `Error creating ${Type} attributes`,
+                Status: 500,
+            };
+        }
     }
 }
 
-const DB = new dataForge("data.db");
+const DB = new ForgeBase("data.db");
 
 async function createAndLog() {
     try {
