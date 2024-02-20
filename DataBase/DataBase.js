@@ -20,35 +20,36 @@ class Database {
     }
 
     initialize() {
-        const entitiesSql = `
-        CREATE TABLE IF NOT EXISTS Entities (
-            entity_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            type TEXT NOT NULL
-        );
-    `;
-        const attributesSql = `
-        CREATE TABLE IF NOT EXISTS Attributes (
-            attribute_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            entity_id INTEGER NOT NULL,
-            key TEXT NOT NULL,
-            value TEXT NOT NULL,
-            FOREIGN KEY (entity_id) REFERENCES Entities(entity_id)
-        );
-    `;
-        const relationshipsSql = `
-        CREATE TABLE IF NOT EXISTS Relationships (
-            relationship_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            entity_id1 INTEGER NOT NULL,  
-            entity_id2 INTEGER NOT NULL, 
-            relation TEXT NOT NULL,
-            FOREIGN KEY (entity_id1) REFERENCES Entities(entity_id),
-            FOREIGN KEY (entity_id2) REFERENCES Entities(entity_id)
-        );
-    `;
+        const entitiesSql = `CREATE TABLE IF NOT EXISTS Entities (
+            EntityID INTEGER PRIMARY KEY AUTOINCREMENT,
+            EntityType TEXT NOT NULL
+          )`;
+        const attributesSql = `CREATE TABLE IF NOT EXISTS Attributes (
+            AttributeID INTEGER PRIMARY KEY AUTOINCREMENT,
+            AttributeName TEXT NOT NULL,
+            DataType TEXT NOT NULL
+          )`;
+
+        const valueSql = `CREATE TABLE IF NOT EXISTS Values (
+            EntityID INTEGER,
+            AttributeID INTEGER,
+            Value TEXT NOT NULL,
+            FOREIGN KEY (EntityID) REFERENCES Entities (EntityID),
+            FOREIGN KEY (AttributeID) REFERENCES Attributes (AttributeID)
+          )`;
+        const relationshipsSql = `CREATE TABLE IF NOT EXISTS Relationships (
+            RelationshipID INTEGER PRIMARY KEY AUTOINCREMENT,
+            EntityID1 INTEGER,
+            EntityID2 INTEGER,
+            RelationshipType TEXT NOT NULL,
+            FOREIGN KEY (EntityID1) REFERENCES Entities (EntityID),
+            FOREIGN KEY (EntityID2) REFERENCES Entities (EntityID)
+          )`;
 
         return Promise.all([
             this.CreateTable(entitiesSql),
             this.CreateTable(attributesSql),
+            this.CreateTable(valueSql),
             this.CreateTable(relationshipsSql),
         ])
             .then(() => {
