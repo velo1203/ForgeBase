@@ -20,19 +20,16 @@ const productRef = forgeBase.setReference("Product");
 //     name: `user1`,
 //     age: 5,
 // });
+// for (let i = 0; i < 1000; i++) {
+//     productRef.create({
+//         name: `iphone${i}`,
+//         price: i,
+//     });
+// }
 
-for (let i = 0; i < 10000; i++) {
-    productRef.create({
-        name: "iphone",
-        price: 1000,
-        EntityID: 1,
-    });
-}
-
-// userRef.get({ name: "user1", age: 5 }, true).then((res) => {
-//     console.log(res);
-// });
-
-// userRef.getAll({ name: "iphone" }, true).then((res) => {
+productRef.get({ name: "iphone1", price: 1 }, true).then((res) => {
+    console.log(res);
+});
+// productRef.getAll().then((res) => {
 //     console.log(res);
 // });

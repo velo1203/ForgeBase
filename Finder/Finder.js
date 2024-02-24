@@ -5,45 +5,52 @@ class Finder {
 
     // 동적으로 WHERE 절을 생성하는 메서드
     buildWhereClause(jsonQuery, operators, entityType) {
+        // 입력된 JSON 쿼리에서 각 속성과 값을 추출하여 조건을 생성합니다.
         const whereClauses = Object.entries(jsonQuery).map(
             ([attribute, value]) => {
-                return `Attributes.AttributeName = '${attribute}' AND EntityValues.Value = '${value}' AND Entities.EntityType = '${entityType}'`;
+                return `EntityValues.Attribute = '${attribute}' AND EntityValues.Value = '${value}'`;
             }
         );
-        return whereClauses.join(` ${operators} `);
+
+        // 모든 조건을 연산자로 연결하고, 엔터티 타입에 대한 조건을 추가합니다.
+        const whereClause =
+            whereClauses.length > 0
+                ? `(${whereClauses.join(
+                      ` ${operators} `
+                  )}) AND Entities.EntityType = '${entityType}'`
+                : `Entities.EntityType = '${entityType}'`;
+
+        return whereClause;
     }
 
     // get 메서드: 입력된 쿼리 객체를 바탕으로 검색을 수행하고 결과를 반환
     async get(jsonQuery, strict = true, entityType) {
-        const operators = strict === true ? "AND" : "OR";
+        const operators = strict ? "AND" : "OR";
         const whereClause = this.buildWhereClause(
             jsonQuery,
             operators,
             entityType
         );
+        console.log("whereClause", whereClause);
+
         const sql = `
-            SELECT 
-                Entities.EntityID,
-                Attributes.AttributeName, 
-                EntityValues.Value
+            SELECT DISTINCT 
+                Entities.EntityID
             FROM 
                 Entities
             JOIN 
                 EntityValues ON Entities.EntityID = EntityValues.EntityID
-            JOIN 
-                Attributes ON EntityValues.AttributeID = Attributes.AttributeID
             WHERE 
                 ${whereClause}
         `;
 
         try {
+            // SQL 쿼리를 실행합니다.
             const queryResults = await this.db.all(sql);
-            const entityIds = [];
+            // 쿼리 결과로부터 EntityID만 추출합니다.
+            const entityIds = queryResults.map(({ EntityID }) => EntityID);
 
-            queryResults.forEach(({ EntityID }) => {
-                entityIds.push(EntityID);
-            });
-
+            // 각 EntityID에 대한 세부 정보를 가져옵니다.
             return this.getByIds(entityIds);
         } catch (error) {
             console.error("Error executing get method in Finder:", error);
@@ -53,30 +60,27 @@ class Finder {
 
     async getAll(entityType) {
         const sql = `
-          SELECT 
+        SELECT 
             Entities.EntityID, 
-            Attributes.AttributeName, 
+            EntityValues.Attribute, 
             EntityValues.Value
-          FROM 
+        FROM 
             Entities
-          JOIN 
+        JOIN 
             EntityValues ON Entities.EntityID = EntityValues.EntityID
-          JOIN 
-            Attributes ON EntityValues.AttributeID = Attributes.AttributeID
         WHERE Entities.EntityType = '${entityType}'
-        `;
+    `;
 
         try {
             const queryResults = await this.db.all(sql);
             const finalResults = {};
 
-            queryResults.forEach(({ EntityID, AttributeName, Value }) => {
+            queryResults.forEach(({ EntityID, Attribute, Value }) => {
                 if (!finalResults[EntityID]) {
                     finalResults[EntityID] = { EntityID };
                 }
-                finalResults[EntityID][AttributeName] = Value;
+                finalResults[EntityID][Attribute] = Value;
             });
-
             return Object.values(finalResults);
         } catch (error) {
             console.error("Error executing getAll method in Finder:", error);
@@ -86,29 +90,27 @@ class Finder {
 
     async getByIds(entityIds) {
         const sql = `
-          SELECT 
+        SELECT 
             Entities.EntityID, 
-            Attributes.AttributeName, 
+            EntityValues.Attribute, 
             EntityValues.Value
-          FROM 
+        FROM 
             Entities
-          JOIN 
+        JOIN 
             EntityValues ON Entities.EntityID = EntityValues.EntityID
-          JOIN 
-            Attributes ON EntityValues.AttributeID = Attributes.AttributeID
-          WHERE 
+        WHERE 
             Entities.EntityID IN (${entityIds.join(",")})
-        `;
+    `;
 
         try {
             const queryResults = await this.db.all(sql);
             const finalResults = {};
 
-            queryResults.forEach(({ EntityID, AttributeName, Value }) => {
+            queryResults.forEach(({ EntityID, Attribute, Value }) => {
                 if (!finalResults[EntityID]) {
                     finalResults[EntityID] = { EntityID };
                 }
-                finalResults[EntityID][AttributeName] = Value;
+                finalResults[EntityID][Attribute] = Value;
             });
 
             return Object.values(finalResults);
