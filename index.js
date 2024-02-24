@@ -22,6 +22,6 @@ const userRef = forgeBase.setReference("User");
 //     });
 // }
 
-userRef.get({ name: "User50" }).then((res) => {
+userRef.getAll().then((res) => {
     console.log(res);
 });

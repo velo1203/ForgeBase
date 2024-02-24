@@ -26,6 +26,10 @@ class Reference {
     async get(jsonQuery) {
         return this.Finder.get(jsonQuery);
     }
+
+    async getAll() {
+        return this.Finder.getAll();
+    }
 }
 
 module.exports = { Reference };

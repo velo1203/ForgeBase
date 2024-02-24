@@ -46,6 +46,38 @@ class Finder {
         }
     }
 
+    async getAll() {
+        const sql = `
+          SELECT 
+            Entities.EntityID, 
+            Attributes.AttributeName, 
+            EntityValues.Value
+          FROM 
+            Entities
+          JOIN 
+            EntityValues ON Entities.EntityID = EntityValues.EntityID
+          JOIN 
+            Attributes ON EntityValues.AttributeID = Attributes.AttributeID
+        `;
+
+        try {
+            const queryResults = await this.db.all(sql);
+            const finalResults = {};
+
+            queryResults.forEach(({ EntityID, AttributeName, Value }) => {
+                if (!finalResults[EntityID]) {
+                    finalResults[EntityID] = { EntityID };
+                }
+                finalResults[EntityID][AttributeName] = Value;
+            });
+
+            return Object.values(finalResults);
+        } catch (error) {
+            console.error("Error executing getAll method in Finder:", error);
+            throw error;
+        }
+    }
+
     async getByIds(entityIds) {
         const sql = `
           SELECT 
