@@ -7,7 +7,7 @@ class Entity {
         const sql = "INSERT INTO Entities (type) VALUES (?)";
         return this.db.run(sql, [type]);
     }
-
+    dk;
     read(entityId) {
         const sql = "SELECT * FROM Entities WHERE entity_id = ?";
         return this.db.get(sql, [entityId]);
