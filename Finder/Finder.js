@@ -4,7 +4,7 @@ class Finder {
     }
 
     // 동적으로 WHERE 절을 생성하는 메서드
-    buildWhereClause(jsonQuery, operators, entityType) {
+    buildWhereClause(jsonQuery, entityType) {
         // 입력된 JSON 쿼리에서 각 속성과 값을 추출하여 조건을 생성합니다.
         const whereClauses = Object.entries(jsonQuery).map(
             ([attribute, value]) => {
@@ -16,7 +16,7 @@ class Finder {
         const whereClause =
             whereClauses.length > 0
                 ? `(${whereClauses.join(
-                      ` ${operators} `
+                      ` OR `
                   )}) AND Entities.EntityType = '${entityType}'`
                 : `Entities.EntityType = '${entityType}'`;
 
@@ -25,13 +25,8 @@ class Finder {
 
     // get 메서드: 입력된 쿼리 객체를 바탕으로 검색을 수행하고 결과를 반환
     async get(jsonQuery, strict = true, entityType) {
-        const operators = strict ? "AND" : "OR";
-        const whereClause = this.buildWhereClause(
-            jsonQuery,
-            operators,
-            entityType
-        );
-        console.log("whereClause", whereClause);
+        //쿼리 최적화 필요
+        const whereClause = this.buildWhereClause(jsonQuery, entityType);
 
         const sql = `
             SELECT DISTINCT 
@@ -49,9 +44,17 @@ class Finder {
             const queryResults = await this.db.all(sql);
             // 쿼리 결과로부터 EntityID만 추출합니다.
             const entityIds = queryResults.map(({ EntityID }) => EntityID);
-
+            const results = await this.getByIds(entityIds);
             // 각 EntityID에 대한 세부 정보를 가져옵니다.
-            return this.getByIds(entityIds);
+            if (strict !== true) {
+                return results;
+            }
+            const filteredResults = results.filter((result) => {
+                return Object.entries(jsonQuery).every(([attribute, value]) => {
+                    return result[attribute] === value;
+                });
+            });
+            return filteredResults;
         } catch (error) {
             console.error("Error executing get method in Finder:", error);
             throw error;
