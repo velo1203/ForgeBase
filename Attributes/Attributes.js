@@ -3,54 +3,39 @@ class Attributes {
         this.db = db;
     }
 
-    create(entityId, key, value) {
-        const sql =
-            "INSERT INTO Attributes (entity_id, key, value) VALUES (?, ?, ?)";
-        return this.db.run(sql, [entityId, key, value]);
+    // 속성 생성
+    create(attributeName) {
+        const sql = `INSERT INTO Attributes (AttributeName) VALUES (?)`;
+        return this.db.run(sql, [attributeName]);
     }
 
-    read(attributeId) {
-        const sql = "SELECT * FROM Attributes WHERE attribute_id = ?";
+    // 속성 조회 (ID로 조회)
+    findById(attributeId) {
+        const sql = `SELECT * FROM Attributes WHERE AttributeID = ?`;
         return this.db.get(sql, [attributeId]);
     }
 
-    update(attributeId, key, value) {
-        const sql =
-            "UPDATE Attributes SET key = ?, value = ? WHERE attribute_id = ?";
-        return this.db.run(sql, [key, value, attributeId]);
+    findAllbyName(attributeName) {
+        const sql = `SELECT * FROM Attributes WHERE AttributeName = ?`;
+        return this.db.all(sql, [attributeName]);
     }
 
+    // 속성 업데이트
+    update(attributeId, attributeName) {
+        const sql = `UPDATE Attributes SET AttributeName = ? WHERE AttributeID = ?`;
+        return this.db.run(sql, [attributeName, attributeId]);
+    }
+
+    // 속성 삭제
     delete(attributeId) {
-        const sql = "DELETE FROM Attributes WHERE attribute_id = ?";
+        const sql = `DELETE FROM Attributes WHERE AttributeID = ?`;
         return this.db.run(sql, [attributeId]);
     }
 
-    get(entityId) {
-        const sql = "SELECT * FROM Attributes WHERE entity_id = ?";
-        return this.db.all(sql, [entityId]);
-    }
-
-    getAttribute(entityId, key) {
-        const sql = "SELECT * FROM Attributes WHERE entity_id = ? AND key = ?";
-        return this.db.get(sql, [entityId, key]);
-    }
-
-    getAttributeValue(entityId, key) {
-        const sql =
-            "SELECT value FROM Attributes WHERE entity_id = ? AND key = ?";
-        return this.db.get(sql, [entityId, key]);
-    }
-
-    getAttributeKey(entityId, value) {
-        const sql =
-            "SELECT key FROM Attributes WHERE entity_id = ? AND value = ?";
-        return this.db.get(sql, [entityId, value]);
-    }
-
-    getAttributeId(entityId, key, value) {
-        const sql =
-            "SELECT attribute_id FROM Attributes WHERE entity_id = ? AND key = ? AND value = ?";
-        return this.db.get(sql, [entityId, key, value]);
+    // 모든 속성 조회
+    findAll() {
+        const sql = `SELECT * FROM Attributes`;
+        return this.db.all(sql);
     }
 }
 
