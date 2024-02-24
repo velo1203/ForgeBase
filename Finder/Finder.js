@@ -4,21 +4,26 @@ class Finder {
     }
 
     // 동적으로 WHERE 절을 생성하는 메서드
-    buildWhereClause(jsonQuery) {
+    buildWhereClause(jsonQuery, operators, entityType) {
         const whereClauses = Object.entries(jsonQuery).map(
             ([attribute, value]) => {
-                return `Attributes.AttributeName = '${attribute}' AND EntityValues.Value = '${value}'`;
+                return `Attributes.AttributeName = '${attribute}' AND EntityValues.Value = '${value}' AND Entities.EntityType = '${entityType}'`;
             }
         );
-        return whereClauses.join(" OR ");
+        return whereClauses.join(` ${operators} `);
     }
 
     // get 메서드: 입력된 쿼리 객체를 바탕으로 검색을 수행하고 결과를 반환
-    async get(jsonQuery) {
-        const whereClause = this.buildWhereClause(jsonQuery);
+    async get(jsonQuery, strict = true, entityType) {
+        const operators = strict === true ? "AND" : "OR";
+        const whereClause = this.buildWhereClause(
+            jsonQuery,
+            operators,
+            entityType
+        );
         const sql = `
             SELECT 
-                Entities.EntityID, 
+                Entities.EntityID,
                 Attributes.AttributeName, 
                 EntityValues.Value
             FROM 
@@ -46,7 +51,7 @@ class Finder {
         }
     }
 
-    async getAll() {
+    async getAll(entityType) {
         const sql = `
           SELECT 
             Entities.EntityID, 
@@ -58,6 +63,7 @@ class Finder {
             EntityValues ON Entities.EntityID = EntityValues.EntityID
           JOIN 
             Attributes ON EntityValues.AttributeID = Attributes.AttributeID
+        WHERE Entities.EntityType = '${entityType}'
         `;
 
         try {

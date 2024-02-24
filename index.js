@@ -14,14 +14,25 @@ class ForgeBase {
 const forgeBase = new ForgeBase("./ForgeBase.db");
 
 const userRef = forgeBase.setReference("User");
+const productRef = forgeBase.setReference("Product");
 
-// for (let i = 0; i < 1000; i++) {
-//     userRef.create({
-//         name: `User1`,
-//         age: 1,
-//     });
-// }
+// userRef.create({
+//     name: `user1`,
+//     age: 5,
+// });
 
-userRef.getAll().then((res) => {
-    console.log(res);
-});
+for (let i = 0; i < 10000; i++) {
+    productRef.create({
+        name: "iphone",
+        price: 1000,
+        EntityID: 1,
+    });
+}
+
+// userRef.get({ name: "user1", age: 5 }, true).then((res) => {
+//     console.log(res);
+// });
+
+// userRef.getAll({ name: "iphone" }, true).then((res) => {
+//     console.log(res);
+// });

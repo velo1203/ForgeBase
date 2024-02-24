@@ -26,18 +26,12 @@ class Database {
                 EntityType TEXT NOT NULL
             );`);
 
-            this.db.run(`CREATE TABLE IF NOT EXISTS Attributes (
-                AttributeID INTEGER PRIMARY KEY AUTOINCREMENT,
-                AttributeName TEXT NOT NULL
-            );`);
-
             this.db.run(`CREATE TABLE IF NOT EXISTS EntityValues (
                 ValueID INTEGER PRIMARY KEY AUTOINCREMENT,
                 EntityID INTEGER NOT NULL,
-                AttributeID INTEGER NOT NULL,
+                Attribute TEXT NOT NULL,
                 Value TEXT,
-                FOREIGN KEY (EntityID) REFERENCES Entities (EntityID),
-                FOREIGN KEY (AttributeID) REFERENCES Attributes (AttributeID)
+                FOREIGN KEY (EntityID) REFERENCES Entities (EntityID)
             );`);
 
             this.db.run(
@@ -82,7 +76,6 @@ class Database {
             });
         });
     }
-
     // 단일 결과를 반환하는 SQL 쿼리를 실행하는 경우 (SELECT)
     get(sql, params = []) {
         return new Promise((resolve, reject) => {
@@ -97,7 +90,6 @@ class Database {
             });
         });
     }
-
     // 여러 결과를 반환하는 SQL 쿼리를 실행하는 경우 (SELECT)
     all(sql, params = []) {
         return new Promise((resolve, reject) => {
