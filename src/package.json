@@ -1,15 +1,41 @@
 {
-  "name": "zanzibar",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "sqlite3": "^5.1.7"
-  }
+    "name": "forgebase",
+    "version": "1.0.0",
+    "description": "ForgeBase is a Nodejs library that allows you to use very flexible relationships and properties in a database without the need for a schema.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "database",
+        "sqlite",
+        "nodejs",
+        "javascript",
+        "forgebase",
+        "forge",
+        "base",
+        "flexible",
+        "relationships",
+        "properties",
+        "schema",
+        "nosql",
+        "nosql-database",
+        "nosql-databases",
+        "nosql-database-management",
+        "nosql-database-management-system",
+        "nosql-database-management-systems",
+        "nosql-database-system",
+        "nosql-database-systems",
+        "nosql-databases-system",
+        "nosql-databases-systems",
+        "nosql-database-system-management",
+        "nosql-database-system-managements",
+        "nosql-database-systems-management",
+        "nosql"
+    ],
+    "author": "devho",
+    "license": "ISC",
+    "dependencies": {
+        "sqlite3": "^5.1.7"
+    }
 }

@@ -1,15 +1,24 @@
-# ForgeBase (under development)
+# ForgeBase
 
-ForgeBase utilizes three tables: entities, attributes, and relationships to make the database more flexible.
+ForgeBase is a very simple local database management library that utilizes three main tables - Entity, Attribute, and Relationship - to create a flexible database structure. This gives it the ability to easily adapt to different types of data and rapidly changing data models.
 
-# Why ForgeBase?
+# Overview
 
-For example, let's say you want to store information about users. You create an entity of type Person and give it attributes like name, age, and email password.
+ForgeBase simplifies common database tasks, such as storing user information, by allowing users to create entities of type Person and give them attributes such as name, age, email, and password. While traditional database systems are rigid when it comes to schema changes, ForgeBase goes beyond those constraints to provide greater flexibility.
 
-While traditional databases have a rigid schema, ForgeBase can easily adapt to different types of data and rapidly changing data models.
+# Features
 
-# Performance
+-   `Flexibility`: Structure utilizing entities, attributes, and relationships lends itself to different types of data and changing data models.
 
-The above library uses a local database based on sqlite. It uses a variant of the traditional EAV model to improve speed through query optimization: on a small project, fetching 1000 pieces of data at a time was in the range of about '20ms'.
+-   `Performance`: The use of a local database and query optimization based on SQLite provides excellent performance. For example, the time to fetch 1000 pieces of data in a small project is about 12 ms.
 
-The EAV model also provides a flexible schema by treating data as a table of entities, attributes, and values. It also requires complex queries. With the above library, you can manage the database with simple functions.
+-   `Simplicity`: Complex queries may be required, but ForgeBase handles this complexity internally, allowing users to manage the database with simple function calls.
+
+-   `Performance metrics`
+    ForgeBase's performance is noteworthy: When searching for a specific entity, it takes an average of 14 ms to process a thousand pieces of data. This is achieved using a variant of the Entity-Attribute-Value (EAV) model, which provides both flexible schema management and fast data processing speeds.
+
+# Getting Started
+
+```javascript
+
+```
