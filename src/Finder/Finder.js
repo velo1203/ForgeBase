@@ -18,7 +18,6 @@ class Finder {
             whereClause += ` AND EV${index}.Attribute = '${attribute}' AND EV${index}.Value = '${value}'`;
             index++;
         }
-        console.log("whereClause", whereClause);
         // SQL 쿼리 구성
         const sql = `
             SELECT DISTINCT Entities.EntityID
