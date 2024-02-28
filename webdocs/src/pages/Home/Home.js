@@ -1,11 +1,7 @@
-import { StyledDefaultPage } from '../../style/layout/StyledDefaultPage';
+import { StyledDefaultPage } from "../../style/layout/StyledDefaultPage";
 
 function Home() {
-  return (
-<StyledDefaultPage>
-
-</StyledDefaultPage>
-  );
+    return <StyledDefaultPage></StyledDefaultPage>;
 }
 
 export default Home;
