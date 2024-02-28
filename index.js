@@ -26,9 +26,10 @@ const productRef = forgeBase.setReference("Product");
 //     price: 1,
 // });
 
-productRef.get({ name: "iphone1", price: "1" }, true).then((res) => {
+productRef.get({ name: "iphone1", price: 1 }, true).then((res) => {
     console.log(res);
 });
+
 // productRef.getAll().then((res) => {
 //     console.log(res);
 // });

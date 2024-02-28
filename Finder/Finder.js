@@ -3,58 +3,38 @@ class Finder {
         this.db = db;
     }
 
-    // 동적으로 WHERE 절을 생성하는 메서드
-    buildWhereClause(jsonQuery, entityType) {
-        // 입력된 JSON 쿼리에서 각 속성과 값을 추출하여 조건을 생성합니다.
-        const whereClauses = Object.entries(jsonQuery).map(
-            ([attribute, value]) => {
-                return `EntityValues.Attribute = '${attribute}' AND EntityValues.Value = '${value}'`;
-            }
-        );
-
-        // 모든 조건을 연산자로 연결하고, 엔터티 타입에 대한 조건을 추가합니다.
-        const whereClause =
-            whereClauses.length > 0
-                ? `(${whereClauses.join(
-                      ` OR `
-                  )}) AND Entities.EntityType = '${entityType}'`
-                : `Entities.EntityType = '${entityType}'`;
-
-        return whereClause;
-    }
-
-    // get 메서드: 입력된 쿼리 객체를 바탕으로 검색을 수행하고 결과를 반환
     async get(jsonQuery, strict = true, entityType) {
-        //쿼리 최적화 필요
-        const whereClause = this.buildWhereClause(jsonQuery, entityType);
+        // JOIN을 위한 변수 초기화
+        let joinClause = "";
+        let whereClause = `Entities.EntityType = '${entityType}'`;
+        let index = 1;
 
+        // JSON 쿼리의 각 항목에 대해 JOIN과 WHERE 절을 동적으로 구성
+        for (const [attribute, value] of Object.entries(jsonQuery)) {
+            joinClause += `
+                JOIN EntityValues AS EV${index}
+                ON Entities.EntityID = EV${index}.EntityID
+            `;
+            whereClause += ` AND EV${index}.Attribute = '${attribute}' AND EV${index}.Value = '${value}'`;
+            index++;
+        }
+
+        // SQL 쿼리 구성
         const sql = `
-            SELECT DISTINCT 
-                Entities.EntityID
-            FROM 
-                Entities
-            JOIN 
-                EntityValues ON Entities.EntityID = EntityValues.EntityID
-            WHERE 
-                ${whereClause}
+            SELECT DISTINCT Entities.EntityID
+            FROM Entities
+            ${joinClause}
+            WHERE ${whereClause}
         `;
 
         try {
-            // SQL 쿼리를 실행합니다.
+            // SQL 쿼리 실행
             const queryResults = await this.db.all(sql);
-            // 쿼리 결과로부터 EntityID만 추출합니다.
             const entityIds = queryResults.map(({ EntityID }) => EntityID);
+
+            // 엔티티 ID에 해당하는 상세 정보를 가져옴
             const results = await this.getByIds(entityIds);
-            // 각 EntityID에 대한 세부 정보를 가져옵니다.
-            if (strict !== true) {
-                return results;
-            }
-            const filteredResults = results.filter((result) => {
-                return Object.entries(jsonQuery).every(([attribute, value]) => {
-                    return result[attribute] === value;
-                });
-            });
-            return filteredResults;
+            return results;
         } catch (error) {
             console.error("Error executing get method in Finder:", error);
             throw error;

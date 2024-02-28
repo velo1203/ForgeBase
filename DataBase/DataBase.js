@@ -8,7 +8,7 @@ class Database {
             sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
             (err) => {
                 if (err) {
-                    console.error("Database connection error:", err.message);
+                    console.error("Database connectacion error:", err.message);
                 } else {
                     console.log("Database connection successful");
                 }
