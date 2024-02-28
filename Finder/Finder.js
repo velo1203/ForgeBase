@@ -3,7 +3,7 @@ class Finder {
         this.db = db;
     }
 
-    async get(jsonQuery, strict = true, entityType) {
+    async get(jsonQuery, entityType) {
         // JOIN을 위한 변수 초기화
         let joinClause = "";
         let whereClause = `Entities.EntityType = '${entityType}'`;
@@ -18,7 +18,7 @@ class Finder {
             whereClause += ` AND EV${index}.Attribute = '${attribute}' AND EV${index}.Value = '${value}'`;
             index++;
         }
-
+        console.log("whereClause", whereClause);
         // SQL 쿼리 구성
         const sql = `
             SELECT DISTINCT Entities.EntityID

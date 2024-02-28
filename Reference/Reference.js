@@ -11,8 +11,8 @@ class Reference {
     async create(jsonQuery) {
         return this.Creator.create(this.EntityType, jsonQuery);
     }
-    async get(jsonQuery, strict) {
-        return this.Finder.get(jsonQuery, strict, this.EntityType);
+    async get(jsonQuery) {
+        return this.Finder.get(jsonQuery, this.EntityType);
     }
 
     async getAll() {
