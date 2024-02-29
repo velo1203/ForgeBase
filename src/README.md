@@ -1,3 +1,11 @@
+# Hello forgebase!
+
+`ForgeBase` is a very simple local database management library that utilizes three main tables - Entity, Attribute, and Relationship - to create a flexible database structure. This gives it the ability to easily adapt to different types of data and rapidly changing data models.
+
+# Dev's Note
+
+We still have a lot of work to do, and we'd love to see more `pull requests`. Please visit my [GitHub](https://github.com/velo1203/ForgeBase), following helps.
+
 # Start the installation.
 
 ```javascript
