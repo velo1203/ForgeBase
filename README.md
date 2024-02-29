@@ -20,3 +20,11 @@ ForgeBase simplifies common database tasks, such as storing user information, by
 # docs
 
 [Docs URL ](https://www.npmjs.com/package/forgebase?activeTab=readme#start-the-installation)
+
+# installation
+
+```bash
+npm install forgebase
+```
+
+# Release Notes
