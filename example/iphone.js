@@ -21,10 +21,12 @@ const iphones = [];
 //     console.log(result);
 // });
 
-reference.delete({ name: "iphone 1" }).then((result) => {
-    console.log(result);
-});
+reference
+    .update({ color: "black" }, { color: "phone", name: "hello" })
+    .then((result) => {
+        console.log(result);
+    });
 
-// reference.get({ color: "black" }).then((result) => {
+// reference.get({ name: "hello" }).then((result) => {
 //     console.log(result);
 // });
