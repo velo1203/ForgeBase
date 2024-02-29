@@ -16,8 +16,15 @@ const iphones = [];
 // for (let i = 0; i < 80; i++) {
 //     reference.create(iphones);
 // }
-const time = Date.now();
-reference.get({ name: "iphone 12" }).then((result) => {
+// const time = Date.now();
+// reference.get({ name: "iphone 12" }).then((result) => {
+//     console.log(result);
+// });
+
+reference.delete({ name: "iphone 1" }).then((result) => {
     console.log(result);
-    console.log(Date.now() - time);
 });
+
+// reference.get({ color: "black" }).then((result) => {
+//     console.log(result);
+// });
