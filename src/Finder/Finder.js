@@ -29,11 +29,9 @@ class Finder {
         try {
             // SQL 쿼리 실행
             const queryResults = await this.db.all(sql);
-            const entityIds = queryResults.map(({ EntityID }) => EntityID);
 
             // 엔티티 ID에 해당하는 상세 정보를 가져옴
-            const results = await this.getByIds(entityIds);
-            return results;
+            return queryResults.map(({ EntityID }) => EntityID);
         } catch (error) {
             console.error("Error executing get method in Finder:", error);
             throw error;
@@ -71,18 +69,19 @@ class Finder {
     }
 
     async getByIds(entityIds) {
+        const formattedIds = entityIds.map((id) => `'${id}'`).join(","); // 수정된 부분
         const sql = `
-        SELECT 
-            Entities.EntityID, 
-            EntityValues.Attribute, 
-            EntityValues.Value
-        FROM 
-            Entities
-        JOIN 
-            EntityValues ON Entities.EntityID = EntityValues.EntityID
-        WHERE 
-            Entities.EntityID IN (${entityIds.join(",")})
-    `;
+            SELECT 
+                Entities.EntityID, 
+                EntityValues.Attribute, 
+                EntityValues.Value
+            FROM 
+                Entities
+            JOIN 
+                EntityValues ON Entities.EntityID = EntityValues.EntityID
+            WHERE 
+                Entities.EntityID IN (${formattedIds}) 
+        `;
 
         try {
             const queryResults = await this.db.all(sql);

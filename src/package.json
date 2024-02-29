@@ -36,6 +36,7 @@
     "author": "devho",
     "license": "ISC",
     "dependencies": {
-        "sqlite3": "^5.1.7"
+        "sqlite3": "^5.1.7",
+        "uuid": "^9.0.1"
     }
 }

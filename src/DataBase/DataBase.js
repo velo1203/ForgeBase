@@ -22,26 +22,26 @@ class Database {
     initialize() {
         this.db.serialize(() => {
             this.db.run(`CREATE TABLE IF NOT EXISTS Entities (
-                EntityID INTEGER PRIMARY KEY AUTOINCREMENT,
+                EntityID TEXT PRIMARY KEY,
                 EntityType TEXT NOT NULL
             );`);
 
             this.db.run(`CREATE TABLE IF NOT EXISTS EntityValues (
                 ValueID INTEGER PRIMARY KEY AUTOINCREMENT,
-                EntityID INTEGER NOT NULL,
+                EntityID TEXT NOT NULL,
                 Attribute TEXT NOT NULL,
                 Value TEXT,
-                FOREIGN KEY (EntityID) REFERENCES Entities (EntityID)
+                FOREIGN KEY (EntityID) REFERENCES Entities (EntityID) ON DELETE CASCADE
             );`);
 
             this.db.run(
                 `CREATE TABLE IF NOT EXISTS EntityRelations (
-                RelationID INTEGER PRIMARY KEY AUTOINCREMENT,
-                ParentEntityID INTEGER NOT NULL,
-                ChildEntityID INTEGER NOT NULL,
+                RelationID TEXT PRIMARY,
+                ParentEntityID TEXT NOT NULL,
+                ChildEntityID TEXT NOT NULL,
                 RelationType TEXT NOT NULL,
-                FOREIGN KEY (ParentEntityID) REFERENCES Entities (EntityID),
-                FOREIGN KEY (ChildEntityID) REFERENCES Entities (EntityID)
+                FOREIGN KEY (ParentEntityID) REFERENCES Entities (EntityID) ON DELETE CASCADE,
+                FOREIGN KEY (ChildEntityID) REFERENCES Entities (EntityID) ON DELETE CASCADE
             );`,
                 () => {
                     console.log("All tables initialized successfully");
