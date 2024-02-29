@@ -1,6 +1,6 @@
 {
     "name": "forgebase",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "ForgeBase is a Nodejs library that allows you to use very flexible relationships and properties in a database without the need for a schema.",
     "main": "index.js",
     "scripts": {

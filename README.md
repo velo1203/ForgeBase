@@ -17,8 +17,6 @@ ForgeBase simplifies common database tasks, such as storing user information, by
 -   `Performance metrics`
     ForgeBase's performance is noteworthy: When searching for a specific entity, it takes an average of 14 ms to process a thousand pieces of data. This is achieved using a variant of the Entity-Attribute-Value (EAV) model, which provides both flexible schema management and fast data processing speeds.
 
-# Getting Started
+# docs
 
-```javascript
-
-```
+[Docs URL ](https://www.npmjs.com/package/forgebase?activeTab=readme#start-the-installation)
